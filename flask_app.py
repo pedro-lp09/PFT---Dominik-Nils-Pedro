@@ -5,6 +5,8 @@ import git
 import hmac
 import hashlib
 from db import db_execute
+from auth import login_manager, authenticate, register_user
+from flask_login import login_user, logout_user, login_required, current_user
 
 # Load .env variables
 load_dotenv()
@@ -13,7 +15,11 @@ W_SECRET = os.getenv("W_SECRET")
 # Init flask app
 app = Flask(__name__)
 app.config["DEBUG"] = True
+app.secret_key = "supersecret"
 
+# Init auth
+login_manager.init_app(app)
+login_manager.login_view = "login"
 
 # DON'T CHANGE
 def is_valid_signature(x_hub_signature, data, private_key):
@@ -34,7 +40,53 @@ def webhook():
         return 'Updated PythonAnywhere successfully', 200
     return 'Unathorized', 401
 
+# Auth routes
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    if request.method == "POST":
+        username = request.form["username"]
+        password = request.form["password"]
+
+        ok = register_user(username, password)
+        if not ok:
+            return render_template(
+                "sign_up.html",
+                error="Username existiert bereits."
+            )
+
+        return redirect(url_for("login"))
+
+    return render_template("sign_up.html")
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        username = request.form["username"]
+        password = request.form["password"]
+
+        user = authenticate(username, password)
+        if user:
+            login_user(user)
+            return redirect(url_for("dashboard"))
+        else:
+            return render_template(
+                "login.html",
+                error="Falscher Username oder Passwort."
+            )
+
+    return render_template("login.html")
+
+@app.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for("home"))
+
+
+
+# App routes
 @app.route("/", methods=["GET", "POST"])
+@login_required
 def index():
     # GET
     if request.method == "GET":
@@ -48,6 +100,7 @@ def index():
     return redirect(url_for("index"))
 
 @app.post("/complete")
+@login_required
 def complete():
     todo_id = request.form.get("id")
     db_execute("DELETE FROM todos WHERE id=%s", (todo_id,), True)
