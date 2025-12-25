@@ -35,3 +35,12 @@ def delete_transaction(transaction_id):
     cursor.execute('DELETE FROM transactions WHERE id = ?', (transaction_id,))
     connection.commit()
     connection.close()
+def add_recurring_payment(amount, description, day_of_month, category_id):
+    connection = sqlite3.connect('pft_database.db')
+    cursor = connection.cursor()
+    cursor.execute('''
+        INSERT INTO recurring_payments (amount, description, day_of_month, category_id)
+        VALUES (?, ?, ?, ?)
+    ''', (amount, description, day_of_month, category_id))
+    connection.commit()
+    connection.close()
