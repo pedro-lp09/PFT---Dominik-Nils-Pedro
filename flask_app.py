@@ -132,3 +132,19 @@ def complete():
 
 if __name__ == "__main__":
     app.run()
+from flask import Flask, render_template, request, redirect, url_for
+import sqlite3
+
+app = Flask(__name__)
+
+@app.route('/')
+def index():
+    connection = sqlite3.connect('pft_database.db')
+    cursor = connection.cursor()
+    cursor.execute('SELECT * FROM transactions')
+    transactions = cursor.fetchall()
+    connection.close()
+    return render_template('index.html', transactions=transactions)
+
+if __name__ == '__main__':
+    app.run(debug=True)
