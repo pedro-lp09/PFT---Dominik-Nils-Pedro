@@ -110,30 +110,3 @@ def logout():
 
 
 
-# App routes
-@app.route("/", methods=["GET", "POST"])
-@login_required
-def index():
-    # GET: Wenn du die Seite einfach nur aufrufst
-    if request.method == "GET":
-        # Wir laden die Todos aus der Datenbank, damit die Seite nicht abstürzt
-        todos = db_read("SELECT id, content, due FROM todos WHERE user_id=%s ORDER BY due", (current_user.id,))
-        # WICHTIG: Hier habe ich main_page.html durch index.html ersetzt!
-        return render_template("index.html", todos=todos)
-
-    # POST: Wenn du ein Formular abschickst (z.B. neues Todo)
-    content = request.form.get("contents")
-    due = request.form.get("due_at")
-    if content and due:
-        db_write("INSERT INTO todos (user_id, content, due) VALUES (%s, %s, %s)", (current_user.id, content, due, ))
-    return redirect(url_for("index"))
-
-@app.post("/complete")
-@login_required
-def complete():
-    todo_id = request.form.get("id")
-    db_write("DELETE FROM todos WHERE user_id=%s AND id=%s", (current_user.id, todo_id,))
-    return redirect(url_for("index"))
-
-if __name__ == "__main__":
-    app.run()
