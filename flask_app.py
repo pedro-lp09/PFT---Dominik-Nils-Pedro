@@ -111,6 +111,7 @@ def logout():
 def index():
     now = datetime.now()
     current_month = now.strftime('%Y-%m')
+    
     selected_month = request.args.get('month', current_month)
     budget = request.args.get("budget_val", 2000.0, type=float)
 
@@ -151,6 +152,6 @@ def index():
 @login_required
 def delete(todo_id):
     selected_month = request.args.get('month')
-    budget = request.args.get('budget_val')
+    budget = request.args.get('budget_val', 2000.0)
     db_write("DELETE FROM todos WHERE id=%s AND user_id=%s", (todo_id, current_user.id))
     return redirect(url_for("index", month=selected_month, budget_val=budget))
