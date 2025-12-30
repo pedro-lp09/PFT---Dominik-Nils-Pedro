@@ -106,43 +106,39 @@ def logout():
     logout_user()
     return redirect(url_for("index"))
 
+from datetime import datetime
+
 @app.route("/", methods=["GET", "POST"])
 @login_required
 def index():
+    current_month = datetime.now().strftime('%Y-%m')
+    selected_month = request.args.get('month', current_month)
+    budget = request.args.get("budget_val", 2000.0, type=float)
+
     if request.method == "POST":
         content = request.form.get("contents")
         due = request.form.get("due_at")
         amount = request.form.get("amount")
-        
         if content and due and amount:
             try:
-                db_write("INSERT INTO todos (user_id, content, due, amount) VALUES (%s, %s, %s, %s)", (current_user.id, content, due, amount))
+                db_write("INSERT INTO todos (user_id, content, due, amount, month_year) VALUES (%s, %s, %s, %s, %s)", 
+                         (current_user.id, content, due, amount, selected_month))
             except:
-                db_write("INSERT INTO todos (user_id, content, due_at, amount) VALUES (%s, %s, %s, %s)", (current_user.id, content, due, amount))
-        return redirect(url_for("index"))
+                db_write("INSERT INTO todos (user_id, content, due_at, amount, month_year) VALUES (%s, %s, %s, %s, %s)", 
+                         (current_user.id, content, due, amount, selected_month))
+        return redirect(url_for("index", month=selected_month, budget_val=budget))
 
-    budget = request.args.get("budget_val", 2000.0, type=float)
-
-    try:
-        todos = db_read("SELECT id, content, due, amount FROM todos WHERE user_id=%s ORDER BY due", (current_user.id,))
-    except:
-        try:
-            todos = db_read("SELECT id, content, due_at, amount FROM todos WHERE user_id=%s ORDER BY due_at", (current_user.id,))
-        except:
-            todos = []
+    todos = db_read("SELECT id, content, due, amount FROM todos WHERE user_id=%s AND (month_year=%s OR month_year IS NULL) ORDER BY due", 
+                    (current_user.id, selected_month))
     
-    total = 0.0
-    if todos:
-        for todo in todos:
-            if todo.get('amount'):
-                total += float(todo['amount'])
-    
+    total = sum(float(t['amount']) for t in todos if t.get('amount'))
     remaining = budget - total
     
-    return render_template("meine_fixkosten.html", todos=todos, total=total, budget=budget, remaining=remaining)
+    return render_template("meine_fixkosten.html", todos=todos, total=total, budget=budget, remaining=remaining, selected_month=selected_month)
 
 @app.route("/delete/<int:todo_id>")
 @login_required
 def delete(todo_id):
+    selected_month = request.args.get('month')
     db_write("DELETE FROM todos WHERE id=%s AND user_id=%s", (todo_id, current_user.id))
-    return redirect(url_for("index"))
+    return redirect(url_for("index", month=selected_month))
