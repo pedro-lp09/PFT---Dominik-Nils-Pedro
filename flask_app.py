@@ -108,6 +108,8 @@ def logout():
 
 from datetime import datetime
 
+from datetime import datetime
+
 @app.route("/", methods=["GET", "POST"])
 @login_required
 def index():
