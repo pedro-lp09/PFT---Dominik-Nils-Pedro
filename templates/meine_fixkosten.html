@@ -15,6 +15,7 @@
         .amount-text { font-weight: 700; color: #2b2d42; }
         .btn-delete-icon { color: #ef233c; background: #fff1f2; width: 35px; height: 35px; display: inline-flex; align-items: center; justify-content: center; border-radius: 10px; text-decoration: none; transition: 0.2s; }
         .btn-delete-icon:hover { background: #ef233c; color: white; }
+        .total-row { background-color: #f8f9fa; font-size: 1.1rem; }
     </style>
 </head>
 <body>
@@ -65,10 +66,15 @@
                             </a>
                         </td>
                     </tr>
-                    {% else %}
-                    <tr><td colspan="4" class="text-center py-5 text-muted small">Keine Einträge vorhanden.</td></tr>
                     {% endfor %}
                 </tbody>
+                <tfoot class="table-light">
+                    <tr class="total-row">
+                        <td colspan="2" class="fw-bold text-end">Gesamttotal:</td>
+                        <td class="fw-bold text-primary">{{ "%.2f"|format(total|float) }} CHF</td>
+                        <td></td>
+                    </tr>
+                </tfoot>
             </table>
         </div>
     </div>
