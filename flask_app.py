@@ -105,13 +105,14 @@ def register():
 def logout():
     logout_user()
     return redirect(url_for("index"))
-import datetime from datetime
+
+from datetime import datetime
+
 @app.route("/", methods=["GET", "POST"])
 @login_required
 def index():
     now = datetime.now()
     current_month = now.strftime('%Y-%m')
-    
     selected_month = request.args.get('month', current_month)
     budget = request.args.get("budget_val", 2000.0, type=float)
 
@@ -152,6 +153,12 @@ def index():
 @login_required
 def delete(todo_id):
     selected_month = request.args.get('month')
-    budget = request.args.get('budget_val', 2000.0)
+    budget = request.args.get('budget_val')
     db_write("DELETE FROM todos WHERE id=%s AND user_id=%s", (todo_id, current_user.id))
     return redirect(url_for("index", month=selected_month, budget_val=budget))
+
+@app.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('login'))
