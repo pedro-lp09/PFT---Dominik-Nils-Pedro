@@ -125,7 +125,9 @@ def index():
     except:
         todos = db_read("SELECT id, content, due_at, amount FROM todos WHERE user_id=%s ORDER BY due_at", (current_user.id,))
     
-    return render_template("meine_fixkosten.html", todos=todos)
+    total = sum(float(todo['amount']) for todo in todos if todo['amount'])
+    
+    return render_template("meine_fixkosten.html", todos=todos, total=total)
 
 @app.route("/delete/<int:todo_id>")
 @login_required
