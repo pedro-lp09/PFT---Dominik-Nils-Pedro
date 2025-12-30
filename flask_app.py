@@ -129,3 +129,9 @@ def index():
         todos = db_read("SELECT id, content, due_at FROM todos WHERE user_id=%s ORDER BY due_at", (current_user.id,))
     
     return render_template("meine_fixkosten.html", todos=todos)
+@app.route("/delete/<int:todo_id>")
+@login_required
+def delete(todo_id):
+    # Löscht nur das To-Do, wenn es auch wirklich dem eingeloggten User gehört (Sicherheit!)
+    db_write("DELETE FROM todos WHERE id=%s AND user_id=%s", (todo_id, current_user.id))
+    return redirect(url_for("index"))
