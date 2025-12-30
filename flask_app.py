@@ -151,24 +151,46 @@ def index():
                            datetime=datetime,
                            timedelta=timedelta)
 
-@app.route("/copy_month")
+@app.route("/", methods=["GET", "POST"])
 @login_required
-def copy_month():
-    target_month = request.args.get('to')
-    from_month = request.args.get('from')
-    budget = request.args.get('budget_val', 2000.0)
-    
+def index():
+    now = datetime.now()
+    current_month = now.strftime('%Y-%m')
+    selected_month = request.args.get('month', current_month)
+    budget = request.args.get("budget_val", 2000.0, type=float)
+
+    if request.method == "POST":
+        content = request.form.get("contents")
+        due = request.form.get("due_at")
+        amount = request.form.get("amount")
+        if content and due and amount:
+            try:
+                db_write("INSERT INTO todos (user_id, content, due, amount, month_year) VALUES (%s, %s, %s, %s, %s)", 
+                         (current_user.id, content, due, amount, selected_month))
+            except:
+                db_write("INSERT INTO todos (user_id, content, due_at, amount, month_year) VALUES (%s, %s, %s, %s, %s)", 
+                         (current_user.id, content, due, amount, selected_month))
+        return redirect(url_for("index", month=selected_month, budget_val=budget))
+
     try:
-        old_todos = db_read("SELECT content, due, amount FROM todos WHERE user_id=%s AND month_year=%s", (current_user.id, from_month))
+        todos = db_read("SELECT id, content, due, amount FROM todos WHERE user_id=%s AND month_year=%s ORDER BY due", 
+                        (current_user.id, selected_month))
     except:
-        old_todos = db_read("SELECT content, due_at as due, amount FROM todos WHERE user_id=%s AND month_year=%s", (current_user.id, from_month))
+        todos = db_read("SELECT id, content, due_at as due, amount FROM todos WHERE user_id=%s AND month_year=%s ORDER BY due_at", 
+                        (current_user.id, selected_month))
     
-    if old_todos:
-        for item in old_todos:
-            db_write("INSERT INTO todos (user_id, content, due, amount, month_year) VALUES (%s, %s, %s, %s, %s)",
-                     (current_user.id, item['content'], item['due'], item['amount'], target_month))
-                 
-    return redirect(url_for("index", month=target_month, budget_val=budget))
+    if not todos:
+        todos = []
+
+    total = sum(float(t['amount']) for t in todos if t.get('amount'))
+    remaining = budget - total
+    
+    return render_template("meine_fixkosten.html", 
+                           todos=todos, 
+                           total=total, 
+                           budget=budget, 
+                           remaining=remaining, 
+                           selected_month=selected_month)
 
 @app.route("/delete/<int:todo_id>")
 @login_required
