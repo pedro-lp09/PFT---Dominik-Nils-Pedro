@@ -107,17 +107,22 @@ def logout():
     return redirect(url_for("index"))
 
 # App routes
+@app.route("/", methods=["GET", "POST"])
+@login_required
 def index():
-    # GET
-    if request.method == "GET":
+    if request.method == "POST":
+        content = request.form.get("contents")
+        due = request.form.get("due_at")
+        if content and due:
+            try:
+                db_write("INSERT INTO todos (user_id, content, due) VALUES (%s, %s, %s)", (current_user.id, content, due))
+            except:
+                db_write("INSERT INTO todos (user_id, content, due_at) VALUES (%s, %s, %s)", (current_user.id, content, due))
+        return redirect(url_for("index"))
+
+    try:
         todos = db_read("SELECT id, content, due FROM todos WHERE user_id=%s ORDER BY due", (current_user.id,))
-        return render_template("main_page.html", todos=todos)
-
-    # POST
-    content = request.form["contents"]
-    due = request.form["due_at"]
-    db_write("INSERT INTO todos (user_id, content, due) VALUES (%s, %s, %s)", (current_user.id, content, due))
-    return redirect(url_for("index"))
-
-
-
+    except:
+        todos = db_read("SELECT id, content, due_at FROM todos WHERE user_id=%s ORDER BY due_at", (current_user.id,))
+    
+    return render_template("meine_fixkosten.html", todos=todos)
