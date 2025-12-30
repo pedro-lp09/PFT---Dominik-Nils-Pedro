@@ -3,92 +3,297 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Finanz-Planer Archiv</title>
+    <title>Meine Finanzen – Exklusiv</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        :root { --primary-color: #4361ee; --bg-color: #f0f2f5; --card-bg: #ffffff; }
-        body { background-color: var(--bg-color); font-family: 'Inter', sans-serif; padding-top: 20px; }
-        .app-container { max-width: 1000px; margin: auto; }
-        .glass-card { background: var(--card-bg); border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); padding: 30px; border: none; }
-        .target-card { background: linear-gradient(135deg, #4361ee, #7209b7); color: white; border-radius: 15px; padding: 25px; margin-bottom: 30px; }
-        .budget-input { background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); color: white; border-radius: 8px; padding: 5px; width: 110px; text-align: center; font-weight: bold; }
-        .month-selector { background: white; padding: 10px 20px; border-radius: 50px; shadow: 0 4px 15px rgba(0,0,0,0.05); display: inline-flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+        :root {
+            --primary-dark: #1a1a2e; /* Dunkles Basis-Thema */
+            --accent-gold: #b3a37d; /* Gold-Akzent */
+            --text-light: #e0e0e0;
+            --card-bg: #222238;
+            --input-bg: #33334d;
+            --success-color: #2ec4b6;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+        }
+        body {
+            background-color: var(--primary-dark);
+            color: var(--text-light);
+            font-family: 'Inter', sans-serif;
+            padding-top: 50px;
+        }
+        h1, h2, h3, h4, .display-font {
+            font-family: 'Playfair Display', serif;
+            color: var(--accent-gold);
+        }
+        .app-container {
+            max-width: 1000px;
+            margin: auto;
+        }
+        .glass-card {
+            background-color: var(--card-bg);
+            border-radius: 25px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            padding: 40px;
+            border: 1px solid rgba(255,255,255,0.05);
+            backdrop-filter: blur(5px); /* Leichter Glas-Effekt */
+        }
+        .budget-summary {
+            background: linear-gradient(145deg, var(--accent-gold) 0%, #a0906f 100%);
+            color: var(--primary-dark);
+            border-radius: 18px;
+            padding: 25px 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        .budget-summary::before {
+            content: '';
+            position: absolute;
+            top: -20px; left: -20px;
+            width: 80px; height: 80px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            filter: blur(10px);
+        }
+        .budget-input {
+            background: rgba(0,0,0,0.1);
+            border: 1px solid rgba(0,0,0,0.2);
+            color: var(--primary-dark);
+            border-radius: 8px;
+            padding: 8px 12px;
+            width: 120px;
+            text-align: center;
+            font-weight: bold;
+        }
+        .budget-input::placeholder { color: rgba(0,0,0,0.6); }
+        .form-control, .form-select {
+            background-color: var(--input-bg);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: var(--text-light);
+            border-radius: 10px;
+            padding: 10px 15px;
+        }
+        .form-control:focus, .form-select:focus {
+            background-color: var(--input-bg);
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 0 0.25rem rgba(179, 163, 125, 0.25);
+            color: var(--text-light);
+        }
+        .form-label {
+            color: var(--text-light);
+            font-weight: 500;
+        }
+        .btn-primary {
+            background-color: var(--accent-gold);
+            border-color: var(--accent-gold);
+            color: var(--primary-dark);
+            font-weight: bold;
+            border-radius: 10px;
+            padding: 10px 20px;
+            transition: background-color 0.3s ease;
+        }
+        .btn-primary:hover {
+            background-color: #a0906f;
+            border-color: #a0906f;
+            color: var(--primary-dark);
+        }
+        .btn-light {
+            background-color: rgba(255,255,255,0.1);
+            border-color: rgba(255,255,255,0.1);
+            color: var(--text-light);
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
+        .btn-light:hover {
+            background-color: rgba(255,255,255,0.2);
+            color: var(--text-light);
+        }
+        .table {
+            color: var(--text-light);
+        }
+        .table th {
+            color: var(--accent-gold);
+            border-bottom: 2px solid rgba(179, 163, 125, 0.3);
+            padding-bottom: 15px;
+            padding-top: 0;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+        }
+        .table td {
+            border-top: 1px solid rgba(255,255,255,0.05);
+            padding: 15px 0;
+        }
+        .table tbody tr:hover {
+            background-color: rgba(255,255,255,0.03);
+        }
+        .badge-date {
+            background-color: rgba(255,255,255,0.1);
+            color: var(--text-light);
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+        }
+        .amount-display {
+            font-weight: bold;
+            color: var(--accent-gold);
+            font-family: 'Playfair Display', serif;
+        }
+        .btn-delete {
+            color: var(--danger-color);
+            background-color: rgba(220,53,69,0.1);
+            border-radius: 8px;
+            width: 40px; height: 40px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .btn-delete:hover {
+            background-color: var(--danger-color);
+            color: white;
+        }
+        .month-selector-bar {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            padding: 15px 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+        .alert-info-custom {
+            background-color: rgba(179, 163, 125, 0.1);
+            color: var(--accent-gold);
+            border-color: rgba(179, 163, 125, 0.3);
+            border-radius: 12px;
+            padding: 15px 25px;
+            margin-bottom: 30px;
+        }
+        .progress {
+            background-color: rgba(255,255,255,0.1);
+            border-radius: 8px;
+            height: 10px;
+        }
+        .progress-bar {
+            background-color: var(--success-color); /* Standard-Farbe */
+            border-radius: 8px;
+        }
+        .progress-bar.bg-warning { background-color: var(--warning-color) !important; }
+        .progress-bar.bg-danger { background-color: var(--danger-color) !important; }
+        .progress-bar.bg-success { background-color: var(--success-color) !important; }
+
+        @media (max-width: 768px) {
+            .budget-summary .col-md-4 { border-bottom: 1px solid rgba(0,0,0,0.2); border-right: none !important; padding-bottom: 15px; margin-bottom: 15px; }
+            .budget-summary .col-md-8 { padding-top: 15px; }
+            .month-selector-bar form { flex-wrap: wrap; }
+            .month-selector-bar input, .month-selector-bar button { width: 100%; }
+        }
     </style>
 </head>
 <body>
-<div class="app-container px-3 text-center">
+<div class="app-container px-3">
     
-    <div class="month-selector shadow-sm">
-        <span class="small fw-bold text-muted">Zeitraum:</span>
+    <div class="d-flex justify-content-between align-items-center mb-4 pb-2">
+        <h1 class="h3 fw-bold m-0 display-font">Finanz-Cockpit</h1>
+        <a href="{{ url_for('logout') }}" class="btn btn-light btn-sm">Abmelden</a>
+    </div>
+
+    <div class="month-selector-bar d-flex justify-content-center align-items-center gap-3 mb-5">
+        <span class="small fw-bold text-muted">Aktueller Monat:</span>
         <form method="GET" class="d-flex gap-2">
-            <input type="month" name="month" class="form-control form-control-sm border-0" value="{{ selected_month }}">
+            <input type="month" name="month" class="form-control form-control-sm" value="{{ selected_month }}">
             <input type="hidden" name="budget_val" value="{{ budget }}">
-            <button type="submit" class="btn btn-primary btn-sm rounded-pill px-3">Wechseln</button>
+            <button type="submit" class="btn btn-primary btn-sm px-3">Anzeigen</button>
         </form>
     </div>
 
-    <div class="glass-card text-start">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1 class="h3 fw-bold m-0 text-primary">📊 Finanz-Planer</h1>
-            <a href="{{ url_for('logout') }}" class="btn btn-light btn-sm text-muted">Logout</a>
-        </div>
+    {% if not todos %}
+    <div class="alert alert-info-custom d-flex justify-content-between align-items-center mb-5">
+        <span>Für diesen Monat sind noch keine Fixkosten erfasst.</span>
+        {% set prev_month = (datetime.strptime(selected_month, '%Y-%m') - timedelta(days=1)).strftime('%Y-%m') %}
+        <a href="{{ url_for('copy_month', from=prev_month, to=selected_month, budget_val=budget) }}" class="btn btn-primary btn-sm">
+            Fixkosten vom Vormonat kopieren
+        </a>
+    </div>
+    {% endif %}
 
-        <div class="target-card row align-items-center text-center">
-            <div class="col-md-4 border-end border-white border-opacity-25">
-                <small class="opacity-75 d-block mb-2">Monats-Budget (CHF)</small>
+    <div class="budget-summary mb-5">
+        <div class="row align-items-center">
+            <div class="col-md-4 text-center">
+                <small class="opacity-75 d-block mb-2 text-uppercase fw-bold" style="font-size: 0.7rem;">Monats-Budget</small>
                 <form method="GET" class="d-flex justify-content-center align-items-center gap-2">
                     <input type="hidden" name="month" value="{{ selected_month }}">
-                    <input type="number" name="budget_val" class="budget-input" value="{{ budget }}">
-                    <button type="submit" class="btn btn-sm btn-light fw-bold">Ok</button>
+                    <input type="number" name="budget_val" class="budget-input" value="{{ budget }}" step="50">
+                    <button type="submit" class="btn btn-dark btn-sm py-0 px-2" style="border-radius: 5px; opacity: 0.8;">💾</button>
                 </form>
             </div>
-            <div class="col-md-4 border-end border-white border-opacity-25">
-                <small class="opacity-75">Fixkosten Total</small>
-                <h2 class="fw-bold m-0 text-warning">{{ "%.2f"|format(total|float) }} CHF</h2>
-            </div>
-            <div class="col-md-4">
-                <small class="opacity-75">Spar-Potenzial</small>
-                <h2 class="fw-bold m-0" style="color: #00f5d4;">{{ "%.2f"|format(remaining|float) }} CHF</h2>
+            <div class="col-md-8 px-md-4 pt-4 pt-md-0">
+                <div class="d-flex justify-content-between mb-1">
+                    <small class="fw-bold text-uppercase" style="font-size: 0.7rem;">Fixkosten</small>
+                    <small class="fw-bold text-uppercase" style="font-size: 0.7rem;">Spar-Potenzial</small>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h3 class="fw-bold m-0" style="color: var(--primary-dark);">{{ "%.2f"|format(total|float) }} CHF</h3>
+                    <h3 class="fw-bold m-0" style="color: var(--primary-dark);">{{ "%.2f"|format(remaining|float) }} CHF</h3>
+                </div>
+                <div class="progress" style="height: 12px;">
+                    {% set percent = (total / budget * 100) if budget > 0 else 0 %}
+                    <div class="progress-bar {% if percent > 90 %}bg-danger{% elif percent > 70 %}bg-warning{% else %}bg-success{% endif %}" 
+                         role="progressbar" style="width: {{ percent }}%; transition: 0.8s ease-out;" 
+                         aria-valuenow="{{ percent }}" aria-valuemin="0" aria-valuemax="100">
+                    </div>
+                </div>
+                <small class="opacity-75 text-dark mt-2 d-block" style="font-size: 0.75rem;">
+                    Du nutzt {{ "%.0f"|format(percent) }}% deines Budgets für Fixkosten.
+                </small>
             </div>
         </div>
+    </div>
 
-        <form method="POST" class="row g-3 mb-5 p-3 bg-light rounded-4">
+    <div class="glass-card mb-5">
+        <h2 class="h4 display-font mb-4">Neue Fixkosten erfassen</h2>
+        <form method="POST" class="row g-4">
             <div class="col-md-4">
-                <label class="form-label small fw-bold">Bezeichnung</label>
-                <input type="text" name="contents" class="form-control" placeholder="Miete, Netflix..." required>
+                <label class="form-label">Bezeichnung</label>
+                <input type="text" name="contents" class="form-control" placeholder="Miete, Netflix, Auto..." required>
             </div>
             <div class="col-md-3">
-                <label class="form-label small fw-bold">Fälligkeit</label>
+                <label class="form-label">Fälligkeit</label>
                 <input type="date" name="due_at" class="form-control" required>
             </div>
             <div class="col-md-3">
-                <label class="form-label small fw-bold">Betrag (CHF)</label>
+                <label class="form-label">Betrag (CHF)</label>
                 <input type="number" step="0.05" name="amount" class="form-control" placeholder="0.00" required>
             </div>
             <div class="col-md-2 d-flex align-items-end">
-                <button type="submit" class="btn btn-primary w-100 fw-bold">Hinzufügen</button>
+                <button type="submit" class="btn btn-primary w-100">Hinzufügen</button>
             </div>
         </form>
+    </div>
 
+    <div class="glass-card">
+        <h2 class="h4 display-font mb-4">Deine Fixkosten</h2>
         <div class="table-responsive">
             <table class="table align-middle">
                 <thead>
-                    <tr class="text-muted small">
-                        <th>FIXKOSTEN</th>
-                        <th>DATUM</th>
-                        <th>BETRAG</th>
-                        <th class="text-end">AKTION</th>
+                    <tr>
+                        <th class="ps-0">Position</th>
+                        <th>Fälligkeit</th>
+                        <th>Betrag</th>
+                        <th class="text-end pe-0">Aktion</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for todo in todos %}
                     <tr>
-                        <td class="fw-bold">{{ todo.content }}</td>
-                        <td><span class="badge bg-light text-primary">{{ todo.due if todo.due else todo.due_at }}</span></td>
-                        <td><span class="fw-bold">{{ "%.2f"|format(todo.amount|float) }} CHF</span></td>
-                        <td class="text-end">
-                            <a href="{{ url_for('delete', todo_id=todo.id, month=selected_month) }}" class="btn text-danger" onclick="return confirm('Löschen?')">
+                        <td class="ps-0 fw-bold">{{ todo.content }}</td>
+                        <td><span class="badge badge-date">{{ todo.due if todo.due else todo.due_at }}</span></td>
+                        <td><span class="amount-display">{{ "%.2f"|format(todo.amount|float) }} CHF</span></td>
+                        <td class="text-end pe-0">
+                            <a href="{{ url_for('delete', todo_id=todo.id, month=selected_month, budget_val=budget) }}" class="btn btn-delete" onclick="return confirm('Fixkosten wirklich löschen?')">
                                 <i class="fa-solid fa-trash-can"></i>
                             </a>
                         </td>
@@ -99,5 +304,11 @@
         </div>
     </div>
 </div>
+
+{% if 'timedelta' not in globals() %}
+    {% set _ = globals().update({'timedelta': lambda days: (datetime.now() - datetime.now()).replace(day=days)}) %}
+{% endif %}
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
