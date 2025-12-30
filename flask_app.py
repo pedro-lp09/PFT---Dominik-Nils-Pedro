@@ -109,18 +109,19 @@ def logout():
 @app.route("/", methods=["GET", "POST"])
 @login_required
 def index():
-    budget = 2000.0
-    
     if request.method == "POST":
         content = request.form.get("contents")
         due = request.form.get("due_at")
         amount = request.form.get("amount")
+        
         if content and due and amount:
             try:
                 db_write("INSERT INTO todos (user_id, content, due, amount) VALUES (%s, %s, %s, %s)", (current_user.id, content, due, amount))
             except:
                 db_write("INSERT INTO todos (user_id, content, due_at, amount) VALUES (%s, %s, %s, %s)", (current_user.id, content, due, amount))
         return redirect(url_for("index"))
+
+    budget = request.args.get("budget_val", 2000.0, type=float)
 
     try:
         todos = db_read("SELECT id, content, due, amount FROM todos WHERE user_id=%s ORDER BY due", (current_user.id,))
