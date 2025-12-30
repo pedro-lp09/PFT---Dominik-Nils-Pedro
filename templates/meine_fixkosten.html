@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fixkosten Übersicht</title>
+</head>
+<body>
+    <header>
+        <h1>Meine Fixkosten</h1>
+        <p>Eingeloggt als User-ID: {{ current_user.id }}</p>
+        <a href="{{ url_for('logout') }}">Abmelden</a>
+    </header>
+
+    <hr>
+
+    <section>
+        <h3>Neue Fixkosten hinzufügen</h3>
+        <form method="POST">
+            <input type="text" name="contents" placeholder="z.B. Miete, Netflix, Gym" required>
+            <input type="date" name="due_at" required>
+            <button type="submit">Hinzufügen</button>
+        </form>
+    </section>
+
+    <hr>
+
+    <section>
+        <h3>Aktuelle Fixkosten Liste</h3>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Bezeichnung</th>
+                    <th>Fällig am</th>
+                    <th>Aktion</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for todo in todos %}
+                <tr>
+                    <td>{{ todo[1] }}</td>
+                    <td>{{ todo[2] }}</td>
+                    <td>
+                        <form action="{{ url_for('complete') }}" method="POST" style="display:inline;">
+                            <input type="hidden" name="id" value="{{ todo[0] }}">
+                            <button type="submit">Löschen</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+</body>
+</html>
