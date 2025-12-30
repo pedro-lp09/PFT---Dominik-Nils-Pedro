@@ -110,19 +110,21 @@ def logout():
 @app.route("/", methods=["GET", "POST"])
 @login_required
 def index():
-    if request.method == "GET":
-        # Wir versuchen die Daten zu laden. Wenn 'due' falsch ist, probier 'due_at'
-        try:
-            todos = db_read("SELECT id, content, due FROM todos WHERE user_id=%s", (current_user.id,))
-        except:
-            todos = db_read("SELECT id, content, due_at FROM todos WHERE user_id=%s", (current_user.id,))
+    if request.method == "POST":
+        content = request.form.get("contents")
+        due = request.form.get("due_at")
         
-        return render_template("meine_fixkosten.html", todos=todos)
+        if content and due:
+            try:
+                db_write("INSERT INTO todos (user_id, content, due) VALUES (%s, %s, %s)", (current_user.id, content, due))
+            except:
+                db_write("INSERT INTO todos (user_id, content, due_at) VALUES (%s, %s, %s)", (current_user.id, content, due))
+        
+        return redirect(url_for("index"))
 
-    content = request.form.get("contents")
-    due = request.form.get("due_at")
+    try:
+        todos = db_read("SELECT id, content, due FROM todos WHERE user_id=%s ORDER BY due", (current_user.id,))
+    except:
+        todos = db_read("SELECT id, content, due_at FROM todos WHERE user_id=%s ORDER BY due_at", (current_user.id,))
     
-    if content and due:
-        db_write("INSERT INTO todos (user_id, content, due) VALUES (%s, %s, %s)", (current_user.id, content, due))
-    
-    return redirect(url_for("index"))
+    return render_template("meine_fixkosten.html", todos=todos)
