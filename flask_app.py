@@ -109,6 +109,8 @@ def logout():
 @app.route("/", methods=["GET", "POST"])
 @login_required
 def index():
+    budget = request.args.get("budget", 2000) 
+    
     if request.method == "POST":
         content = request.form.get("contents")
         due = request.form.get("due_at")
@@ -126,11 +128,6 @@ def index():
         todos = db_read("SELECT id, content, due_at, amount FROM todos WHERE user_id=%s ORDER BY due_at", (current_user.id,))
     
     total = sum(float(todo['amount']) for todo in todos if todo['amount'])
+    remaining = float(budget) - total
     
-    return render_template("meine_fixkosten.html", todos=todos, total=total)
-
-@app.route("/delete/<int:todo_id>")
-@login_required
-def delete(todo_id):
-    db_write("DELETE FROM todos WHERE id=%s AND user_id=%s", (todo_id, current_user.id))
-    return redirect(url_for("index"))
+    return render_template("meine_fixkosten.html", todos=todos, total=total, budget=budget, remaining=remaining)
