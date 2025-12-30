@@ -3,15 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fixkosten & Sparziel</title>
+    <title>Finanz-Planer</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --primary-color: #4361ee; --bg-color: #f0f2f5; --card-bg: #ffffff; --success-color: #2ec4b6; }
+        :root { --primary-color: #4361ee; --bg-color: #f0f2f5; --card-bg: #ffffff; }
         body { background-color: var(--bg-color); font-family: 'Inter', sans-serif; padding-top: 40px; }
         .app-container { max-width: 1000px; margin: auto; }
         .glass-card { background: var(--card-bg); border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); padding: 30px; border: none; }
-        .target-card { background: linear-gradient(135deg, #4361ee, #7209b7); color: white; border-radius: 15px; padding: 20px; margin-bottom: 30px; }
+        .target-card { background: linear-gradient(135deg, #4361ee, #7209b7); color: white; border-radius: 15px; padding: 25px; margin-bottom: 30px; }
+        .budget-input { background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); color: white; border-radius: 8px; padding: 5px; width: 100px; text-align: center; }
+        .budget-input::placeholder { color: rgba(255,255,255,0.6); }
         .date-badge { background: #eef2ff; color: var(--primary-color); padding: 5px 12px; border-radius: 8px; font-size: 0.9rem; }
         .btn-delete-icon { color: #ef233c; background: #fff1f2; width: 35px; height: 35px; display: inline-flex; align-items: center; justify-content: center; border-radius: 10px; text-decoration: none; }
     </style>
@@ -27,15 +29,18 @@
 
         <div class="target-card row align-items-center">
             <div class="col-md-4 text-center border-end border-white border-opacity-25">
-                <small class="opacity-75">Monatliches Budget</small>
-                <h2 class="fw-bold m-0">{{ "%.2f"|format(budget|float) }} CHF</h2>
+                <small class="opacity-75 d-block mb-2">Dein Budget (CHF)</small>
+                <form method="GET" class="d-flex justify-content-center align-items-center gap-2">
+                    <input type="number" name="budget_val" class="budget-input" value="{{ budget }}" step="100">
+                    <button type="submit" class="btn btn-sm btn-light py-0">Ok</button>
+                </form>
             </div>
             <div class="col-md-4 text-center border-end border-white border-opacity-25">
                 <small class="opacity-75">Fixkosten Total</small>
                 <h2 class="fw-bold m-0 text-warning">{{ "%.2f"|format(total|float) }} CHF</h2>
             </div>
             <div class="col-md-4 text-center">
-                <small class="opacity-75">Spar-Potenzial / Rest</small>
+                <small class="opacity-75">Rest zum Sparen</small>
                 <h2 class="fw-bold m-0" style="color: #00f5d4;">{{ "%.2f"|format(remaining|float) }} CHF</h2>
             </div>
         </div>
@@ -43,7 +48,7 @@
         <form method="POST" class="row g-3 mb-5 p-3 bg-light rounded-4">
             <div class="col-md-4">
                 <label class="form-label small fw-bold">Bezeichnung</label>
-                <input type="text" name="contents" class="form-control" placeholder="Miete, Netflix..." required>
+                <input type="text" name="contents" class="form-control" placeholder="Miete, Handy..." required>
             </div>
             <div class="col-md-3">
                 <label class="form-label small fw-bold">Fälligkeit</label>
