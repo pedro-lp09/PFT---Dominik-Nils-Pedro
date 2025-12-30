@@ -115,11 +115,14 @@ def index():
         due = request.form.get("due_at")
         if content and due:
             try:
+                # Versuch mit Spaltenname 'due'
                 db_write("INSERT INTO todos (user_id, content, due) VALUES (%s, %s, %s)", (current_user.id, content, due))
             except:
+                # Versuch mit Spaltenname 'due_at'
                 db_write("INSERT INTO todos (user_id, content, due_at) VALUES (%s, %s, %s)", (current_user.id, content, due))
         return redirect(url_for("index"))
 
+    # Abrufen der Daten für die Tabelle
     try:
         todos = db_read("SELECT id, content, due FROM todos WHERE user_id=%s ORDER BY due", (current_user.id,))
     except:
