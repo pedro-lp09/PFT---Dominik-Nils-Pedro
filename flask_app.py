@@ -121,6 +121,29 @@ def login():
         return "Login fehlgeschlagen"
     return render_template("login.html")
 
+from datetime import datetime
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        login_input = request.form.get("username")
+        password = request.form.get("password")
+        
+        try:
+            # Versuch 1: Suche nach Name ODER Email
+            user_data = db_read("SELECT id, password FROM users WHERE username=%s OR email=%s", (login_input, login_input))
+        except:
+            # Versuch 2: Falls 'username' in der DB fehlt, suche nur nach Email
+            user_data = db_read("SELECT id, password FROM users WHERE email=%s", (login_input,))
+            
+        if user_data and user_data[0]['password'] == password:
+            user = User(user_data[0]['id'])
+            login_user(user)
+            return redirect(url_for("index"))
+            
+        return "Login fehlgeschlagen. Bitte prüfe deine Eingaben."
+    return render_template("login.html")
+
 @app.route("/", methods=["GET", "POST"])
 @login_required
 def index():
@@ -128,6 +151,7 @@ def index():
     current_month = now.strftime('%Y-%m')
     selected_month = request.args.get('month', current_month)
     budget = request.args.get("budget_val", 2000.0, type=float)
+    
     if request.method == "POST":
         content = request.form.get("contents")
         due = request.form.get("due_at")
@@ -136,10 +160,14 @@ def index():
             db_write("INSERT INTO todos (user_id, content, due, amount, month_year) VALUES (%s, %s, %s, %s, %s)", 
                      (current_user.id, content, due, amount, selected_month))
         return redirect(url_for("index", month=selected_month, budget_val=budget))
-    todos = db_read("SELECT id, content, due, amount FROM todos WHERE user_id=%s AND month_year=%s ORDER BY due", (current_user.id, selected_month))
+        
+    todos = db_read("SELECT id, content, due, amount FROM todos WHERE user_id=%s AND month_year=%s ORDER BY due", 
+                    (current_user.id, selected_month))
     if not todos: todos = []
+    
     total = sum(float(t['amount']) for t in todos if t.get('amount'))
     remaining = budget - total
+    
     return render_template("meine_fixkosten.html", todos=todos, total=total, budget=budget, remaining=remaining, selected_month=selected_month)
 
 @app.route("/delete/<int:todo_id>")
