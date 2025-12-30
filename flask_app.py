@@ -110,14 +110,17 @@ def logout():
 @app.route("/", methods=["GET", "POST"])
 @login_required
 def index():
-    if request.method == "GET":
-        todos = db_read("SELECT id, content, due FROM todos WHERE user_id=%s ORDER BY due", (current_user.id,))
-        return render_template("meine_fixkosten.html", todos=todos)
+    try:
+        if request.method == "GET":
+            todos = db_read("SELECT id, content, due FROM todos WHERE user_id=%s ORDER BY due", (current_user.id,))
+            return render_template("meine_fixkosten.html", todos=todos)
 
-    content = request.form.get("contents")
-    due = request.form.get("due_at")
+        content = request.form.get("contents")
+        due = request.form.get("due_at")
     
-    if content and due:
-        db_write("INSERT INTO todos (user_id, content, due) VALUES (%s, %s, %s)", (current_user.id, content, due))
+        if content and due:
+            db_write("INSERT INTO todos (user_id, content, due) VALUES (%s, %s, %s)", (current_user.id, content, due))
     
-    return redirect(url_for("index"))
+        return redirect(url_for("index"))
+    except Exception as e:
+        return f"Fehler im Code: {e}"
