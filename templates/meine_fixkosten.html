@@ -13,13 +13,25 @@
         .glass-card { background: var(--card-bg); border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); padding: 30px; border: none; }
         .target-card { background: linear-gradient(135deg, #4361ee, #7209b7); color: white; border-radius: 15px; padding: 25px; margin-bottom: 30px; }
         .budget-input { background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); color: white; border-radius: 8px; padding: 5px; width: 110px; text-align: center; font-weight: bold; }
-        .month-selector { background: white; padding: 10px 20px; border-radius: 50px; shadow: 0 4px 15px rgba(0,0,0,0.05); display: inline-flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+        
+        /* Korrigierte Shadow-Klasse */
+        .month-selector { 
+            background: white; 
+            padding: 10px 20px; 
+            border-radius: 50px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 10px; 
+            margin-bottom: 20px; 
+            border: 1px solid rgba(0,0,0,0.05);
+        }
     </style>
 </head>
 <body>
 <div class="app-container px-3 text-center">
     
-    <div class="month-selector shadow-sm">
+    <div class="month-selector">
         <span class="small fw-bold text-muted">Zeitraum:</span>
         <form method="GET" class="d-flex gap-2">
             <input type="month" name="month" class="form-control form-control-sm border-0" value="{{ selected_month }}">
@@ -88,7 +100,7 @@
                         <td><span class="badge bg-light text-primary">{{ todo.due if todo.due else todo.due_at }}</span></td>
                         <td><span class="fw-bold">{{ "%.2f"|format(todo.amount|float) }} CHF</span></td>
                         <td class="text-end">
-                            <a href="{{ url_for('delete', todo_id=todo.id, month=selected_month) }}" class="btn text-danger" onclick="return confirm('Löschen?')">
+                            <a href="{{ url_for('delete', todo_id=todo.id, month=selected_month, budget_val=budget) }}" class="btn text-danger" onclick="return confirm('Löschen?')">
                                 <i class="fa-solid fa-trash-can"></i>
                             </a>
                         </td>
@@ -101,6 +113,3 @@
 </div>
 </body>
 </html>
-
-
-
