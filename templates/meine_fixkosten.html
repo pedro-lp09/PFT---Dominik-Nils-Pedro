@@ -12,10 +12,11 @@
         .app-container { max-width: 1000px; margin: auto; }
         .glass-card { background: var(--card-bg); border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); padding: 30px; border: none; }
         .target-card { background: linear-gradient(135deg, #4361ee, #7209b7); color: white; border-radius: 15px; padding: 25px; margin-bottom: 30px; }
-        .budget-input { background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); color: white; border-radius: 8px; padding: 5px; width: 100px; text-align: center; }
-        .budget-input::placeholder { color: rgba(255,255,255,0.6); }
+        .budget-input { background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); color: white; border-radius: 8px; padding: 5px; width: 110px; text-align: center; font-weight: bold; }
+        .budget-input:focus { outline: none; background: rgba(255,255,255,0.3); }
         .date-badge { background: #eef2ff; color: var(--primary-color); padding: 5px 12px; border-radius: 8px; font-size: 0.9rem; }
-        .btn-delete-icon { color: #ef233c; background: #fff1f2; width: 35px; height: 35px; display: inline-flex; align-items: center; justify-content: center; border-radius: 10px; text-decoration: none; }
+        .btn-delete-icon { color: #ef233c; background: #fff1f2; width: 35px; height: 35px; display: inline-flex; align-items: center; justify-content: center; border-radius: 10px; text-decoration: none; transition: 0.3s; }
+        .btn-delete-icon:hover { background: #ef233c; color: white; }
     </style>
 </head>
 <body>
@@ -29,10 +30,10 @@
 
         <div class="target-card row align-items-center">
             <div class="col-md-4 text-center border-end border-white border-opacity-25">
-                <small class="opacity-75 d-block mb-2">Dein Budget (CHF)</small>
+                <small class="opacity-75 d-block mb-2">Monats-Budget (CHF)</small>
                 <form method="GET" class="d-flex justify-content-center align-items-center gap-2">
-                    <input type="number" name="budget_val" class="budget-input" value="{{ budget }}" step="100">
-                    <button type="submit" class="btn btn-sm btn-light py-0">Ok</button>
+                    <input type="number" name="budget_val" class="budget-input" value="{{ budget }}" step="50">
+                    <button type="submit" class="btn btn-sm btn-light fw-bold px-3">Speichern</button>
                 </form>
             </div>
             <div class="col-md-4 text-center border-end border-white border-opacity-25">
@@ -40,7 +41,7 @@
                 <h2 class="fw-bold m-0 text-warning">{{ "%.2f"|format(total|float) }} CHF</h2>
             </div>
             <div class="col-md-4 text-center">
-                <small class="opacity-75">Rest zum Sparen</small>
+                <small class="opacity-75">Spar-Potenzial</small>
                 <h2 class="fw-bold m-0" style="color: #00f5d4;">{{ "%.2f"|format(remaining|float) }} CHF</h2>
             </div>
         </div>
@@ -48,7 +49,7 @@
         <form method="POST" class="row g-3 mb-5 p-3 bg-light rounded-4">
             <div class="col-md-4">
                 <label class="form-label small fw-bold">Bezeichnung</label>
-                <input type="text" name="contents" class="form-control" placeholder="Miete, Handy..." required>
+                <input type="text" name="contents" class="form-control" placeholder="Miete, Auto, Abo..." required>
             </div>
             <div class="col-md-3">
                 <label class="form-label small fw-bold">Fälligkeit</label>
@@ -59,7 +60,7 @@
                 <input type="number" step="0.05" name="amount" class="form-control" placeholder="0.00" required>
             </div>
             <div class="col-md-2 d-flex align-items-end">
-                <button type="submit" class="btn btn-primary w-100 fw-bold">Hinzufügen</button>
+                <button type="submit" class="btn btn-primary w-100 fw-bold py-2">Hinzufügen</button>
             </div>
         </form>
 
@@ -80,7 +81,7 @@
                         <td><span class="date-badge">{{ todo.due if todo.due else todo.due_at }}</span></td>
                         <td><span class="fw-bold">{{ "%.2f"|format(todo.amount|float) if todo.amount else "0.00" }} CHF</span></td>
                         <td class="text-end">
-                            <a href="{{ url_for('delete', todo_id=todo.id) }}" class="btn-delete-icon" onclick="return confirm('Löschen?')">
+                            <a href="{{ url_for('delete', todo_id=todo.id) }}" class="btn-delete-icon" onclick="return confirm('Eintrag löschen?')">
                                 <i class="fa-solid fa-trash-can"></i>
                             </a>
                         </td>
