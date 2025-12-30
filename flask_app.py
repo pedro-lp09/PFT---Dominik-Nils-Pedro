@@ -109,11 +109,8 @@ def logout():
 @app.route("/", methods=["GET", "POST"])
 @login_required
 def index():
-    # Aktuellen Monat bestimmen
     now = datetime.now()
     current_month = now.strftime('%Y-%m')
-    
-    # Werte aus der URL holen (Monat und Budget)
     selected_month = request.args.get('month', current_month)
     budget = request.args.get("budget_val", 2000.0, type=float)
 
@@ -122,7 +119,6 @@ def index():
         due = request.form.get("due_at")
         amount = request.form.get("amount")
         if content and due and amount:
-            # Versuche in Spalte 'due' zu schreiben, sonst in 'due_at'
             try:
                 db_write("INSERT INTO todos (user_id, content, due, amount, month_year) VALUES (%s, %s, %s, %s, %s)", 
                          (current_user.id, content, due, amount, selected_month))
@@ -131,7 +127,6 @@ def index():
                          (current_user.id, content, due, amount, selected_month))
         return redirect(url_for("index", month=selected_month, budget_val=budget))
 
-    # Daten abrufen mit Schutz gegen falsche Spaltennamen
     try:
         todos = db_read("SELECT id, content, due, amount FROM todos WHERE user_id=%s AND month_year=%s ORDER BY due", 
                         (current_user.id, selected_month))
@@ -142,7 +137,6 @@ def index():
     if not todos:
         todos = []
 
-    # Berechnung der Finanzen
     total = sum(float(t['amount']) for t in todos if t.get('amount'))
     remaining = budget - total
     
