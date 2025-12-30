@@ -112,17 +112,18 @@ def index():
     if request.method == "POST":
         content = request.form.get("contents")
         due = request.form.get("due_at")
-        if content and due:
+        amount = request.form.get("amount")
+        if content and due and amount:
             try:
-                db_write("INSERT INTO todos (user_id, content, due) VALUES (%s, %s, %s)", (current_user.id, content, due))
+                db_write("INSERT INTO todos (user_id, content, due, amount) VALUES (%s, %s, %s, %s)", (current_user.id, content, due, amount))
             except:
-                db_write("INSERT INTO todos (user_id, content, due_at) VALUES (%s, %s, %s)", (current_user.id, content, due))
+                db_write("INSERT INTO todos (user_id, content, due_at, amount) VALUES (%s, %s, %s, %s)", (current_user.id, content, due, amount))
         return redirect(url_for("index"))
 
     try:
-        todos = db_read("SELECT id, content, due FROM todos WHERE user_id=%s ORDER BY due", (current_user.id,))
+        todos = db_read("SELECT id, content, due, amount FROM todos WHERE user_id=%s ORDER BY due", (current_user.id,))
     except:
-        todos = db_read("SELECT id, content, due_at FROM todos WHERE user_id=%s ORDER BY due_at", (current_user.id,))
+        todos = db_read("SELECT id, content, due_at, amount FROM todos WHERE user_id=%s ORDER BY due_at", (current_user.id,))
     
     return render_template("meine_fixkosten.html", todos=todos)
 
