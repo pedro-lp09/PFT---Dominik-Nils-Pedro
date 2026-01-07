@@ -150,7 +150,7 @@
     <div class="row g-4 mb-5">
         <div class="col-md-4">
             <div class="stat-card">
-                <div class="stat-label">Budget</div>
+                <div class="stat-label">Total Budget</div>
                 <form method="GET" class="d-flex justify-content-center align-items-baseline gap-2">
                     <input type="hidden" name="month" value="{{ selected_month }}">
                     <input type="number" name="budget_val" value="{{ budget }}" class="form-control form-control-sm text-center" style="width: 100px; border-bottom: 1px solid var(--jb-gold); border-top:none; border-left:none; border-right:none; background: transparent;">
@@ -160,7 +160,7 @@
         </div>
         <div class="col-md-4">
             <div class="stat-card">
-                <div class="stat-label">Fixkosten</div>
+                <div class="stat-label">Fixed Liabilities</div>
                 <div class="stat-value">{{ "%.2f"|format(total|float) }} CHF</div>
             </div>
         </div>
@@ -177,10 +177,10 @@
         <form method="POST" class="row g-3">
             <div class="col-md-4">
                 <label class="small text-muted mb-1 d-block" style="letter-spacing: 1px;">DESCRIPTION</label>
-                <input type="text" name="contents" class="form-control" placeholder="e.g. Rent" required>
+                <input type="text" name="contents" class="form-control" placeholder="e.g. Mortgage" required>
             </div>
             <div class="col-md-3">
-                <label class="small text-muted mb-1 d-block" style="letter-spacing: 1px;">DATE</label>
+                <label class="small text-muted mb-1 d-block" style="letter-spacing: 1px;">VALUE DATE</label>
                 <input type="date" name="due_at" class="form-control" required>
             </div>
             <div class="col-md-3">
@@ -197,8 +197,8 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th>Transaction</th>
-                    <th>Value Date</th>
+                    <th>Transaction Details</th>
+                    <th>Valuta</th>
                     <th>Amount</th>
                     <th class="text-end">Action</th>
                 </tr>
@@ -210,7 +210,7 @@
                     <td class="text-muted">{{ todo.due if todo.due else todo.due_at }}</td>
                     <td class="amount-cell">{{ "%.2f"|format(todo.amount|float) }} CHF</td>
                     <td class="text-end">
-                        <a href="{{ url_for('delete', todo_id=todo.id, month=selected_month, budget_val=budget) }}" class="delete-link" onclick="return confirm('Remove position?')">
+                        <a href="{{ url_for('delete', todo_id=todo.id, month=selected_month, budget_val=budget) }}" class="delete-link" onclick="return confirm('Remove position from portfolio?')">
                             DELETE
                         </a>
                     </td>
