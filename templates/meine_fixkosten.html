@@ -3,164 +3,198 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Finanz-Planer Pro</title>
+    <title>Finanz-Planer Carbon</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root { 
-            --primary: #0052ff; 
-            --success: #00c853; 
-            --warning: #ffab00; 
-            --bg: #ffffff; 
-            --border: #f0f0f0; 
-            --text-main: #111111;
-            --text-muted: #666666;
+            --bg: #000000; 
+            --card-bg: #0a0a0a; 
+            --accent: #ffffff; 
+            --primary: #5856d6; 
+            --border: #1c1c1e;
+            --text-secondary: #8e8e93;
         }
         
         body { 
             background-color: var(--bg); 
-            font-family: 'Inter', sans-serif; 
-            color: var(--text-main);
-            padding-top: 40px; 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            color: white;
+            letter-spacing: -0.02em;
         }
 
-        .app-container { max-width: 900px; margin: auto; }
-
-        .month-selector { 
-            background: #f8f9fa; 
-            padding: 8px 16px; 
-            border-radius: 12px; 
-            display: inline-flex; 
-            align-items: center; 
-            gap: 12px; 
-            margin-bottom: 30px;
-            border: 1px solid var(--border);
-        }
+        .app-container { max-width: 850px; margin: 40px auto; }
 
         .glass-card { 
-            background: white; 
-            border-radius: 24px; 
+            background: var(--card-bg); 
+            border-radius: 32px; 
             border: 1px solid var(--border);
-            padding: 40px; 
-            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+            padding: 48px;
         }
 
-        .target-card { 
-            background: #f4f7ff; 
-            border-radius: 20px; 
-            padding: 30px; 
-            margin-bottom: 40px;
-            border: 1px solid rgba(0,82,255,0.1);
+        .month-selector { 
+            background: #1c1c1e; 
+            padding: 6px 12px; 
+            border-radius: 100px; 
+            display: inline-flex; 
+            margin-bottom: 24px;
+            border: 1px solid var(--border);
         }
 
-        .budget-input { 
-            background: white; 
-            border: 1px solid #d0d7de; 
-            color: var(--primary); 
-            border-radius: 10px; 
-            padding: 8px; 
-            width: 120px; 
-            text-align: center; 
+        .month-input {
+            background: transparent;
+            border: none;
+            color: white;
+            font-weight: 600;
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        .stat-box {
+            padding: 24px;
+            border-radius: 24px;
+            background: #1c1c1e;
+            border: 1px solid var(--border);
+            transition: transform 0.2s;
+        }
+
+        .budget-input-minimal {
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid var(--primary);
+            color: white;
+            font-weight: 800;
+            width: 100px;
+            text-align: center;
+            font-size: 1.5rem;
+            outline: none;
+        }
+
+        .btn-add {
+            background: var(--accent);
+            color: black;
+            border: none;
+            border-radius: 16px;
+            font-weight: 800;
+            padding: 12px 24px;
+            transition: all 0.3s;
+        }
+        
+        .btn-add:hover { background: #e5e5ea; transform: translateY(-2px); }
+
+        .form-control-dark {
+            background: #1c1c1e;
+            border: 1px solid var(--border);
+            color: white;
+            border-radius: 16px;
+            padding: 14px;
+        }
+
+        .form-control-dark:focus {
+            background: #2c2c2e;
+            border-color: var(--primary);
+            box-shadow: none;
+            color: white;
+        }
+
+        .table { color: white; margin-top: 20px; }
+        .table thead th { 
+            color: var(--text-secondary);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            border: none;
+        }
+
+        .cost-row {
+            border-bottom: 1px solid var(--border);
+            transition: background 0.2s;
+        }
+
+        .cost-row:hover { background: #151517; }
+
+        .amount-display {
             font-weight: 700;
             font-size: 1.1rem;
         }
 
-        .btn-primary { 
-            background-color: var(--primary); 
-            border: none; 
-            border-radius: 12px; 
-            padding: 10px 20px;
-            font-weight: 600;
+        .date-badge {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
         }
 
-        .form-control { 
-            border-radius: 12px; 
-            border: 1px solid #d0d7de; 
-            padding: 12px;
+        .delete-icon {
+            color: #ff3b30;
+            opacity: 0.5;
+            transition: 0.2s;
         }
+        .delete-icon:hover { opacity: 1; }
 
-        .table { --bs-table-bg: transparent; }
-        .table thead th { 
-            text-transform: uppercase; 
-            letter-spacing: 1px; 
-            font-size: 0.75rem; 
-            border-bottom: 2px solid var(--border);
-            color: var(--text-muted);
-        }
-
-        .amount-text { font-family: 'Inter', monospace; font-weight: 700; color: var(--text-main); }
-        
-        .badge-date { 
-            background: #eef2ff; 
-            color: var(--primary); 
-            font-weight: 600; 
-            padding: 6px 12px; 
-            border-radius: 8px; 
-        }
     </style>
 </head>
 <body>
 
-<div class="app-container px-3 text-center">
+<div class="app-container px-3">
     
-    <div class="month-selector">
-        <span class="small fw-bold text-muted"><i class="fa-regular fa-calendar-check me-1"></i> Zeitraum:</span>
-        <form method="GET" class="d-flex gap-2">
-            <input type="month" name="month" class="form-control form-control-sm border-0 bg-transparent fw-bold" value="{{ selected_month }}">
-            <input type="hidden" name="budget_val" value="{{ budget }}">
-            <button type="submit" class="btn btn-outline-primary btn-sm rounded-pill px-3">Wechseln</button>
-        </form>
+    <div class="text-center">
+        <div class="month-selector">
+            <form method="GET" class="d-flex align-items-center gap-2">
+                <input type="month" name="month" class="month-input" value="{{ selected_month }}">
+                <input type="hidden" name="budget_val" value="{{ budget }}">
+                <button type="submit" class="btn btn-dark btn-sm rounded-pill p-1 px-3" style="font-size: 0.7rem;">Go</button>
+            </form>
+        </div>
     </div>
 
-    <div class="glass-card text-start">
-        <div class="d-flex justify-content-between align-items-center mb-5">
+    <div class="glass-card">
+        <div class="d-flex justify-content-between align-items-start mb-5">
             <div>
-                <h1 class="h2 fw-bold m-0" style="letter-spacing: -1px;">Finanz-Planer <span class="text-primary">.</span></h1>
-                <p class="text-muted small m-0">Professionelle Fixkosten-Verwaltung</p>
+                <h1 class="fw-800 m-0" style="font-weight: 800; font-size: 2.2rem;">Wealth <span style="color: var(--primary);">.</span></h1>
+                <p style="color: var(--text-secondary);">Premium Financial Tracking</p>
             </div>
-            <a href="{{ url_for('logout') }}" class="btn btn-link text-muted text-decoration-none small">
-                <i class="fa-solid fa-arrow-right-from-bracket me-1"></i> Logout
-            </a>
+            <a href="{{ url_for('logout') }}" class="btn btn-outline-secondary btn-sm rounded-pill" style="font-size: 0.7rem; border-color: var(--border);">Logout</a>
         </div>
 
-        <div class="target-card">
-            <div class="row text-center">
-                <div class="col-md-4 border-end border-2">
-                    <small class="text-muted d-block mb-2 fw-bold">Budget (CHF)</small>
-                    <form method="GET" class="d-flex justify-content-center align-items-center gap-2">
+        <div class="row g-4 mb-5">
+            <div class="col-md-4">
+                <div class="stat-box">
+                    <small class="text-muted fw-600 d-block mb-1">BUDGET</small>
+                    <form method="GET" class="d-flex align-items-baseline">
                         <input type="hidden" name="month" value="{{ selected_month }}">
-                        <input type="number" name="budget_val" class="budget-input" value="{{ budget }}">
-                        <button type="submit" class="btn btn-sm btn-primary"><i class="fa-solid fa-check"></i></button>
+                        <input type="number" name="budget_val" class="budget-input-minimal" value="{{ budget }}">
+                        <span class="ms-1 fw-bold">CHF</span>
+                        <button type="submit" class="d-none"></button>
                     </form>
                 </div>
-                <div class="col-md-4 border-end border-2">
-                    <small class="text-muted d-block mb-2 fw-bold">Fixkosten Total</small>
-                    <h2 class="fw-bold m-0" style="color: var(--text-main);">{{ "%.2f"|format(total|float) }}</h2>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-box">
+                    <small class="text-muted fw-600 d-block mb-1">SPENT</small>
+                    <h2 class="fw-bold m-0" style="font-size: 1.8rem;">{{ "%.2f"|format(total|float) }}</h2>
                 </div>
-                <div class="col-md-4">
-                    <small class="text-muted d-block mb-2 fw-bold">Spar-Potenzial</small>
-                    <h2 class="fw-bold m-0" style="color: var(--success);">{{ "%.2f"|format(remaining|float) }}</h2>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-box" style="background: var(--primary);">
+                    <small class="text-white text-opacity-75 fw-600 d-block mb-1">SAVINGS</small>
+                    <h2 class="fw-bold m-0" style="font-size: 1.8rem;">{{ "%.2f"|format(remaining|float) }}</h2>
                 </div>
             </div>
         </div>
 
-        <h5 class="fw-bold mb-3"><i class="fa-solid fa-plus-circle me-2 text-primary"></i>Neue Position</h5>
-        <form method="POST" class="row g-3 mb-5 p-4 border rounded-4 bg-white shadow-sm">
-            <div class="col-md-4">
-                <label class="form-label small fw-bold text-muted">Bezeichnung</label>
-                <input type="text" name="contents" class="form-control" placeholder="z.B. Miete" required>
+        <h6 class="text-muted fw-bold mb-3" style="font-size: 0.8rem; letter-spacing: 1px;">NEUER EINTRAG</h6>
+        <form method="POST" class="row g-2 mb-5">
+            <div class="col-md-5">
+                <input type="text" name="contents" class="form-control-dark form-control" placeholder="Bezeichnung" required>
             </div>
             <div class="col-md-3">
-                <label class="form-label small fw-bold text-muted">Fälligkeit</label>
-                <input type="date" name="due_at" class="form-control" required>
+                <input type="date" name="due_at" class="form-control-dark form-control" required>
             </div>
-            <div class="col-md-3">
-                <label class="form-label small fw-bold text-muted">Betrag (CHF)</label>
-                <input type="number" step="0.05" name="amount" class="form-control" placeholder="0.00" required>
+            <div class="col-md-2">
+                <input type="number" step="0.05" name="amount" class="form-control-dark form-control" placeholder="CHF" required>
             </div>
-            <div class="col-md-2 d-flex align-items-end">
-                <button type="submit" class="btn btn-primary w-100 fw-bold">Sichern</button>
+            <div class="col-md-2">
+                <button type="submit" class="btn-add w-100">Add</button>
             </div>
         </form>
 
@@ -168,21 +202,23 @@
             <table class="table align-middle">
                 <thead>
                     <tr>
-                        <th>Bezeichnung</th>
-                        <th>Datum</th>
+                        <th>Details</th>
+                        <th>Fällig</th>
                         <th>Betrag</th>
-                        <th class="text-end">Aktion</th>
+                        <th class="text-end"></th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for todo in todos %}
-                    <tr>
-                        <td class="fw-bold text-dark">{{ todo.content }}</td>
-                        <td><span class="badge-date">{{ todo.due if todo.due else todo.due_at }}</span></td>
-                        <td class="amount-text">{{ "%.2f"|format(todo.amount|float) }} CHF</td>
+                    <tr class="cost-row">
+                        <td class="py-3">
+                            <div class="fw-bold">{{ todo.content }}</div>
+                        </td>
+                        <td><span class="date-badge">{{ todo.due if todo.due else todo.due_at }}</span></td>
+                        <td class="amount-display">{{ "%.2f"|format(todo.amount|float) }}</td>
                         <td class="text-end">
-                            <a href="{{ url_for('delete', todo_id=todo.id, month=selected_month, budget_val=budget) }}" class="btn btn-light btn-sm rounded-circle text-danger" onclick="return confirm('Eintrag entfernen?')">
-                                <i class="fa-solid fa-trash"></i>
+                            <a href="{{ url_for('delete', todo_id=todo.id, month=selected_month, budget_val=budget) }}" class="delete-icon" onclick="return confirm('Löschen?')">
+                                <i class="fa-solid fa-circle-xmark fa-lg"></i>
                             </a>
                         </td>
                     </tr>
