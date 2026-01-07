@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wealth Management | JB Style</title>
+    <title>Asset Management Portfolio</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root { 
-            --jb-blue: #002a4e; /* Das typische Julius Bär Dunkelblau */
-            --jb-gold: #a68966; /* Edles Gold-Beige */
+            --jb-blue: #002a4e; 
+            --jb-gold: #a68966; 
             --jb-light-gold: #f4f0e9;
             --text-dark: #1a1a1a;
             --border: #e0e0e0;
@@ -30,7 +30,6 @@
 
         .app-container { max-width: 1000px; margin: 40px auto; }
 
-        /* Header & Logo Style */
         .brand-header {
             border-bottom: 1px solid var(--border);
             padding-bottom: 20px;
@@ -45,7 +44,6 @@
             text-transform: uppercase;
         }
 
-        /* Die Info-Karten im Banken-Stil */
         .stat-card {
             background: white;
             border: 1px solid var(--border);
@@ -69,11 +67,9 @@
             color: var(--jb-blue);
         }
 
-        /* Eingabefelder */
         .jb-input-group {
             background: var(--jb-light-gold);
             padding: 30px;
-            border-radius: 0;
             border: 1px solid #dcd3c7;
         }
 
@@ -107,11 +103,6 @@
             color: white;
         }
 
-        /* Tabelle */
-        .table {
-            margin-top: 30px;
-        }
-
         .table thead th {
             border-top: none;
             border-bottom: 2px solid var(--jb-blue);
@@ -119,10 +110,6 @@
             font-size: 0.8rem;
             text-transform: uppercase;
             letter-spacing: 1px;
-        }
-
-        .table tbody tr {
-            border-bottom: 1px solid var(--border);
         }
 
         .amount-cell {
@@ -153,8 +140,8 @@
 <div class="app-container px-3">
     
     <div class="brand-header d-flex justify-content-between align-items-center">
-        <div class="brand-title">Dominik <span style="font-weight:300">Management</span></div>
-        <a href="{{ url_for('logout') }}" class="text-muted small text-decoration-none">EXIT CLIENT PORTAL</a>
+        <div class="brand-title">Asset <span style="font-weight:300">Management</span></div>
+        <a href="{{ url_for('logout') }}" class="text-muted small text-decoration-none">EXIT PORTAL</a>
     </div>
 
     <div class="month-selector-bar d-flex justify-content-between align-items-center">
@@ -169,7 +156,7 @@
     <div class="row g-4 mb-5">
         <div class="col-md-4">
             <div class="stat-card">
-                <div class="stat-label">Investment Budget</div>
+                <div class="stat-label">Budget</div>
                 <form method="GET" class="d-flex justify-content-center align-items-baseline gap-2">
                     <input type="hidden" name="month" value="{{ selected_month }}">
                     <input type="number" name="budget_val" value="{{ budget }}" class="form-control form-control-sm text-center" style="width: 100px; border-bottom: 1px solid var(--jb-gold); border-top:none; border-left:none; border-right:none;">
@@ -179,7 +166,7 @@
         </div>
         <div class="col-md-4">
             <div class="stat-card">
-                <div class="stat-label">Total Liabilities</div>
+                <div class="stat-label">Liabilities Total</div>
                 <div class="stat-value">{{ "%.2f"|format(total|float) }} CHF</div>
             </div>
         </div>
@@ -192,7 +179,7 @@
     </div>
 
     <div class="jb-input-group mb-5">
-        <h6 class="stat-label mb-4">New Entry</h6>
+        <h6 class="stat-label mb-4">New Position</h6>
         <form method="POST" class="row g-3">
             <div class="col-md-4">
                 <input type="text" name="contents" class="form-control" placeholder="Description" required>
