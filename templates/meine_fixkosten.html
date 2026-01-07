@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Asset Management Portfolio</title>
+    <title>Asset Management | Portfolio</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
@@ -98,10 +98,7 @@
             transition: 0.3s;
         }
 
-        .btn-jb:hover {
-            background-color: var(--jb-gold);
-            color: white;
-        }
+        .btn-jb:hover { background-color: var(--jb-gold); color: white; }
 
         .table thead th {
             border-top: none;
@@ -112,10 +109,7 @@
             letter-spacing: 1px;
         }
 
-        .amount-cell {
-            font-weight: 600;
-            color: var(--jb-blue);
-        }
+        .amount-cell { font-weight: 600; color: var(--jb-blue); }
 
         .delete-link {
             color: #cc0000;
@@ -141,15 +135,15 @@
     
     <div class="brand-header d-flex justify-content-between align-items-center">
         <div class="brand-title">Asset <span style="font-weight:300">Management</span></div>
-        <a href="{{ url_for('logout') }}" class="text-muted small text-decoration-none">EXIT PORTAL</a>
+        <a href="{{ url_for('logout') }}" class="text-muted small text-decoration-none">LOGOUT</a>
     </div>
 
     <div class="month-selector-bar d-flex justify-content-between align-items-center">
-        <div class="small fw-bold text-muted">REPORTING PERIOD</div>
+        <div class="small fw-bold text-muted">BERICHTSZEITRAUM</div>
         <form method="GET" class="d-flex gap-2">
             <input type="month" name="month" class="form-control form-control-sm" value="{{ selected_month }}">
             <input type="hidden" name="budget_val" value="{{ budget }}">
-            <button type="submit" class="btn btn-jb btn-sm">Refresh</button>
+            <button type="submit" class="btn btn-jb btn-sm">Aktualisieren</button>
         </form>
     </div>
 
@@ -159,39 +153,42 @@
                 <div class="stat-label">Budget</div>
                 <form method="GET" class="d-flex justify-content-center align-items-baseline gap-2">
                     <input type="hidden" name="month" value="{{ selected_month }}">
-                    <input type="number" name="budget_val" value="{{ budget }}" class="form-control form-control-sm text-center" style="width: 100px; border-bottom: 1px solid var(--jb-gold); border-top:none; border-left:none; border-right:none;">
+                    <input type="number" name="budget_val" value="{{ budget }}" class="form-control form-control-sm text-center" style="width: 100px; border-bottom: 1px solid var(--jb-gold); border-top:none; border-left:none; border-right:none; background: transparent;">
                     <span class="small fw-bold">CHF</span>
                 </form>
             </div>
         </div>
         <div class="col-md-4">
             <div class="stat-card">
-                <div class="stat-label">Liabilities Total</div>
+                <div class="stat-label">Gesamtaufwand</div>
                 <div class="stat-value">{{ "%.2f"|format(total|float) }} CHF</div>
             </div>
         </div>
         <div class="col-md-4">
             <div class="stat-card">
-                <div class="stat-label">Net Liquidity</div>
+                <div class="stat-label">Netto-Liquidität</div>
                 <div class="stat-value" style="color: #2c5e2e;">{{ "%.2f"|format(remaining|float) }} CHF</div>
             </div>
         </div>
     </div>
 
     <div class="jb-input-group mb-5">
-        <h6 class="stat-label mb-4">New Position</h6>
+        <h6 class="stat-label mb-4">Neue Position erfassen</h6>
         <form method="POST" class="row g-3">
             <div class="col-md-4">
-                <input type="text" name="contents" class="form-control" placeholder="Description" required>
+                <label class="small text-muted mb-1 d-block" style="letter-spacing: 1px;">BEZEICHNUNG</label>
+                <input type="text" name="contents" class="form-control" placeholder="z.B. Miete" required>
             </div>
             <div class="col-md-3">
+                <label class="small text-muted mb-1 d-block" style="letter-spacing: 1px;">DATUM</label>
                 <input type="date" name="due_at" class="form-control" required>
             </div>
             <div class="col-md-3">
-                <input type="number" step="0.05" name="amount" class="form-control" placeholder="Amount CHF" required>
+                <label class="small text-muted mb-1 d-block" style="letter-spacing: 1px;">BETRAG (CHF)</label>
+                <input type="number" step="0.05" name="amount" class="form-control" placeholder="0.00" required>
             </div>
-            <div class="col-md-2">
-                <button type="submit" class="btn btn-jb w-100">Execute</button>
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="submit" class="btn btn-jb w-100">Ausführen</button>
             </div>
         </form>
     </div>
@@ -200,10 +197,10 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th>Position</th>
-                    <th>Value Date</th>
-                    <th>Amount</th>
-                    <th class="text-end">Action</th>
+                    <th>Transaktion</th>
+                    <th>Valuta</th>
+                    <th>Betrag</th>
+                    <th class="text-end">Aktion</th>
                 </tr>
             </thead>
             <tbody>
@@ -213,8 +210,8 @@
                     <td class="text-muted">{{ todo.due if todo.due else todo.due_at }}</td>
                     <td class="amount-cell">{{ "%.2f"|format(todo.amount|float) }} CHF</td>
                     <td class="text-end">
-                        <a href="{{ url_for('delete', todo_id=todo.id, month=selected_month, budget_val=budget) }}" class="delete-link" onclick="return confirm('Remove position?')">
-                            Delete
+                        <a href="{{ url_for('delete', todo_id=todo.id, month=selected_month, budget_val=budget) }}" class="delete-link" onclick="return confirm('Position entfernen?')">
+                            Löschen
                         </a>
                     </td>
                 </tr>
