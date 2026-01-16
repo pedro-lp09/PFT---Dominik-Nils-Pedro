@@ -116,15 +116,13 @@ def index():
     current_month = now.strftime('%Y-%m')
     selected_month = request.args.get('month', current_month)
     
-    # --- NEU: Budget aus der Datenbank laden ---
     user_settings = db_read("SELECT budget FROM user_settings WHERE user_id=%s", (current_user.id,))
     if user_settings:
         saved_budget = float(user_settings[0]['budget'])
     else:
-        saved_budget = 2000.0  # Standard, falls noch nichts gespeichert wurde
+        saved_budget = 2000.0
         db_write("INSERT INTO user_settings (user_id, budget) VALUES (%s, %s)", (current_user.id, saved_budget))
 
-    # Prüfen, ob der User das Budget gerade geändert hat
     budget_val_from_url = request.args.get("budget_val", type=float)
     if budget_val_from_url is not None and budget_val_from_url != saved_budget:
         db_write("UPDATE user_settings SET budget=%s WHERE user_id=%s", (budget_val_from_url, current_user.id))
